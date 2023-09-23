@@ -54,6 +54,32 @@ class userRepository{
         return crypto.randomBytes(4).toString('hex')
     }
 
+    async getOne(id){
+        const records = await this.getAll();
+        const procurarUsuario = records.find((record)=> record.id === id)
+        console.log(procurarUsuario)
+    }
+    async delete(id){
+        const records = await this.getAll();
+        const deleteU = records.filter((record)=> record.id !== id)
+
+        await this.writeAll(deleteU)
+        
+    }
+    async update (id, atributos){
+        //pegar todos
+        const records = await this.getAll();
+
+        const toUpdate = records.find((record)=> record.id === id)
+        console.log("antes")
+        console.log(records)
+
+        Object.assign(toUpdate , atributos);
+
+        console.log("depois")
+        console.log(records)
+
+    }
     async writeAll(records){
         return  await fs.promises.writeFile(this.fileName, JSON.stringify(records))
     }
@@ -68,11 +94,13 @@ class userRepository{
 
 const teste = async ()=>{
     const repo = new userRepository("user.json")
-    const users = await repo.getAll();
+  /*   const users = await repo.getAll();
 
    await repo.create({nome:"Pimenta", email: "toma@gmail.com"})
 
-    console.log(users)
+    console.log(users) */
+
+    repo.update("3ac1741b", {"nome": "David", "email": ".@gmail"})
 }
 
 teste()
